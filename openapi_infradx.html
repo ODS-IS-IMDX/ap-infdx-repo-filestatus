@@ -1,0 +1,1078 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" >
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/index.css" >
+    <style>
+      .topbar {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"> </script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"> </script>
+    <script>
+     const spec=
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "インフラ管理DX領域API",
+    "description": "インフラ管理DX領域のAPIです",
+    "version": "1.0.0",
+    "license": {
+      "name": "Copyright © NTT DATA Japan Corporation"
+    }
+  },
+  "tags": [
+    {
+      "name": "INDX_0010.地下埋設物照会業務"
+    },
+    {
+      "name": "INDX_0012.イベント情報照会業務"
+    },
+    {
+      "name": "INDX_0018.出力ファイル取得業務"
+    }
+  ],
+  "paths": {
+    "/event-information": {
+      "get": {
+        "tags": [
+          "INDX_0012.イベント情報照会業務"
+        ],
+        "summary": "GEI_0010.イベント情報取得",
+        "description": "指定した範囲内に存在するイベント情報を取得する。",
+        "parameters": [
+          {
+            "name": "sids",
+            "in": "query",
+            "description": "空間ID（複数指定可能）",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "25/0/465670/2026574",
+                "25/0/465670/2026575"
+              ]
+            }
+          },
+          {
+            "name": "infraCompanyIds",
+            "in": "query",
+            "description": "インフラ事業者ID（複数指定可能）",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "12345678901234567890",
+                "12345678901234567891"
+              ]
+            }
+          },
+          {
+            "name": "returnZoomLevel",
+            "in": "query",
+            "description": "返却ズームレベル",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 24
+            }
+          },
+          {
+            "name": "updateDate",
+            "in": "query",
+            "description": "更新日時",
+            "schema": {
+              "type": "string",
+              "example": "2024/08/20 03:59:44"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/event-information"
+                },
+                "examples": {
+                  "event_exist": {
+                    "summary": "イベント情報ありの場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "eventList": [
+                          {
+                            "eventAttribute": {
+                              "停電件数": "140",
+                              "停電理由": "設備ヘの樹木等の接触",
+                              "復旧予定時刻": "2024/09/12 15:51"
+                            },
+                            "eventType": "サービス停止",
+                            "eventId": 1,
+                            "infraCompanyId": "12345678901234567890",
+                            "sidList": [
+                              "19/0/465068/206496",
+                              "19/0/465069/206496"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "event_noexist": {
+                    "summary": "イベント情報なしの場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "eventList": [
+                          null
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "リクエスト不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "parameterError": {
+                    "summary": "パラメータエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Bad Request",
+                      "message": "リクエストパラメータ：sidsが正しくありません。{sids=XX}",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "アクセス権限不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "アクセス権限エラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Forbidden",
+                      "message": "アクセス権限がありません。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "システムエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "システムエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Internal Server Error",
+                      "message": "システムエラーが発生しました。システム管理者にお問い合わせください。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "タイムアウトエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "タイムアウトエラーの場合",
+                    "value": {
+                      "message": "タイムアウトエラー"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/facility-information": {
+      "get": {
+        "tags": [
+          "INDX_0010.地下埋設物照会業務"
+        ],
+        "summary": "GUF_0010.埋設物情報取得",
+        "description": "指定した範囲内に存在する埋設物情報を取得する。\n\n空間ID、取得対象領域・EPSGコードはいずれか一方を設定してください。\n- 空間ID、取得対象領域が両方設定されている、または空間ID、取得対象領域いずれも未設定の場合、エラーとなります。",
+        "parameters": [
+          {
+            "name": "sids",
+            "in": "query",
+            "description": "空間ID（複数指定可能）（空間IDで領域指定する場合は必須）",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "24/52/14882510/6607973",
+                "24/52/14882404/6607859"
+              ]
+            }
+          },
+          {
+            "name": "searchArea",
+            "in": "query",
+            "description": "取得対象領域（Polygon座標）（Polygon座標で領域指定する場合は必須。）",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "format": "float"
+                }
+              },
+              "example": [
+                [
+                  139.78210802181243,
+                  35.861025779545
+                ],
+                [
+                  139.78248889549255,
+                  35.6863335046979
+                ],
+                [
+                  139.78274638755798,
+                  35.6860110784939
+                ],
+                [
+                  139.78260154827117,
+                  35.6859544359181
+                ]
+              ]
+            }
+          },
+          {
+            "name": "epsgCode",
+            "in": "query",
+            "description": "EPSGコード（Polygon座標で領域指定する場合は必須。）",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 4326
+            }
+          },
+          {
+            "name": "infraCompanyIds",
+            "in": "query",
+            "description": "インフラ事業者ID（複数指定可能）",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "12345678901234567890",
+                "12345678901234567891"
+              ]
+            }
+          },
+          {
+            "name": "returnZoomLevel",
+            "in": "query",
+            "description": "返却ズームレベル",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "example": 24
+            }
+          },
+          {
+            "name": "updateDate",
+            "in": "query",
+            "description": "更新日時",
+            "schema": {
+              "type": "string",
+              "example": "2024/08/20 03:59:44"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/facility-information"
+                },
+                "examples": {
+                  "isFacilityExist_true": {
+                    "summary": "埋設物照会ありの場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "isFacilityExist": true,
+                        "facilitySidList": [
+                          {
+                            "dataType": "Update",
+                            "facilityAttribute": {
+                              "土被り": "5",
+                              "管の径": "15",
+                              "管の配置状況": "exist"
+                            },
+                            "infraCompanyId": "12345678901234567890",
+                            "objectId": "A0001",
+                            "objectName": "管路",
+                            "sidList": [
+                              "24/52/14882510/6607973",
+                              "24/52/14882404/6607859"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "isFacilityExist_false": {
+                    "summary": "埋設物照会なしの場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "isFacilityExist": false,
+                        "facilitySidList": [
+                          null
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "リクエスト不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "parameterError": {
+                    "summary": "パラメータエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Bad Request",
+                      "message": "リクエストパラメータ：sidsが正しくありません。{sids=XX}",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "アクセス権限不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "アクセス権限エラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Forbidden",
+                      "message": "アクセス権限がありません。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "システムエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "システムエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Internal Server Error",
+                      "message": "システムエラーが発生しました。システム管理者にお問い合わせください。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "タイムアウトエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "タイムアウトエラーの場合",
+                    "value": {
+                      "message": "タイムアウトエラー"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/facility-output-task": {
+      "put": {
+        "tags": [
+          "INDX_0010.地下埋設物照会業務"
+        ],
+        "summary": "GUF_0030.埋設物情報取得受付",
+        "description": "指定した範囲内に存在する埋設物情報取得依頼を受け付ける。",
+        "requestBody": {
+          "description": "埋設物情報取得受付リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/facilityReception"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "依頼受付成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/facility-output-task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "リクエスト不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "リクエスト不正の場合",
+                    "value": {
+                      "code": "[infra-dx] Bad Request",
+                      "message": "リクエストパラメータ：sidListが正しくありません。{sidList=[XX]}",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "アクセス権限不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "アクセス権限エラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Forbidden",
+                      "message": "アクセス権限がありません。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "システムエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "システムエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Internal Server Error",
+                      "message": "システムエラーが発生しました。システム管理者にお問い合わせください。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "タイムアウトエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "タイムアウトエラーの場合",
+                    "value": {
+                      "message": "タイムアウトエラー"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/output-task": {
+      "get": {
+        "tags": [
+          "INDX_0018.出力ファイル取得業務"
+        ],
+        "summary": "GOF_0010.ファイル作成状況確認",
+        "description": "取得依頼した情報がファイルに出力されているか確認し、出力が完了している場合は出力先のURLを取得する。",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "description": "タスクID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "000000000000000001"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/output-task"
+                },
+                "examples": {
+                  "status_unprocessed": {
+                    "summary": "タスク状況が0:未着手の場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "taskStatus": "0"
+                      }
+                    }
+                  },
+                  "status_processing": {
+                    "summary": "タスク状況が1:処理中の場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "taskStatus": "1"
+                      }
+                    }
+                  },
+                  "status_completed": {
+                    "summary": "タスク状況が2:完了の場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "filePath": "https://xxxx/ccc.zip",
+                        "taskStatus": "2"
+                      }
+                    }
+                  },
+                  "status_error": {
+                    "summary": "タスク状況が9:エラーの場合",
+                    "value": {
+                      "dataModelType": "test1",
+                      "attribute": {
+                        "taskStatus": "9",
+                        "error": "ファイル作成に失敗しました。"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "リクエスト不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "リクエスト不正の場合",
+                    "value": {
+                      "code": "[infra-dx] Bad Request",
+                      "message": "リクエストパラメータ：taskIdが正しくありません。{taskId=XX}",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "アクセス権限不正",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "アクセス権限エラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Forbidden",
+                      "message": "アクセス権限がありません。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "対象データなし",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "noAccessError": {
+                    "summary": "対象データなしの場合",
+                    "value": {
+                      "code": "[infra-dx] Not Found",
+                      "message": "対象データがありません。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "システムエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "システムエラーの場合",
+                    "value": {
+                      "code": "[infra-dx] Internal Server Error",
+                      "message": "システムエラーが発生しました。システム管理者にお問い合わせください。",
+                      "detail": "2024/08/20 03:59:44"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "タイムアウトエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "examples": {
+                  "systemError": {
+                    "summary": "タイムアウトエラーの場合",
+                    "value": {
+                      "message": "タイムアウトエラー"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "error": {
+        "type": "object",
+        "required": [
+          "sidList"
+        ],
+        "description": "エラー情報",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "コード",
+            "example": "[infra-dx] Internal Server Error"
+          },
+          "message": {
+            "type": "string",
+            "description": "メッセージ",
+            "example": "システムエラーが発生しました。システム管理者にお問い合わせください。"
+          },
+          "detail": {
+            "type": "string",
+            "description": "詳細",
+            "example": "2024/08/20 03:59:44"
+          }
+        }
+      },
+      "event-information": {
+        "required": [
+          "dataModelType",
+          "attribute"
+        ],
+        "type": "object",
+        "description": "イベント情報取得結果",
+        "properties": {
+          "dataModelType": {
+            "type": "string",
+            "description": "データモデルタイプ",
+            "enum": [
+              "test1",
+              "test2"
+            ],
+            "example": "test1"
+          },
+          "attribute": {
+            "required": [
+              "eventList"
+            ],
+            "type": "object",
+            "description": "イベント情報取得結果",
+            "properties": {
+              "eventList": {
+                "type": "array",
+                "description": "イベント情報リスト",
+                "items": {
+                  "type": "object",
+                  "description": "イベント情報",
+                  "properties": {
+                    "eventAttribute": {
+                      "type": "object",
+                      "properties": {},
+                      "description": "イベント属性情報",
+                      "example": {
+                        "停電件数": "140",
+                        "停電理由": "設備ヘの樹木等の接触",
+                        "復旧予定時刻": "20240912155125"
+                      }
+                    },
+                    "eventType": {
+                      "type": "string",
+                      "description": "イベント種別",
+                      "example": "サービス停止"
+                    },
+                    "infraCompanyId": {
+                      "type": "string",
+                      "description": "インフラ事業者ID",
+                      "example": "12345678901234567890"
+                    },
+                    "eventId": {
+                      "type": "integer",
+                      "description": "イベントID",
+                      "example": 1
+                    },
+                    "sidList": {
+                      "type": "array",
+                      "description": "空間ID（配列）",
+                      "example": [
+                        "19/0/465068/206496",
+                        "19/0/465069/206496"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "facility-information": {
+        "required": [
+          "dataModelType",
+          "attribute"
+        ],
+        "type": "object",
+        "description": "埋設物情報取得結果",
+        "properties": {
+          "dataModelType": {
+            "type": "string",
+            "description": "データモデルタイプ",
+            "enum": [
+              "test1",
+              "test2"
+            ],
+            "example": "test1"
+          },
+          "attribute": {
+            "required": [
+              "facilitySidList",
+              "isFacilityExist"
+            ],
+            "type": "object",
+            "description": "埋設物情報取得結果",
+            "properties": {
+              "isFacilityExist": {
+                "type": "boolean",
+                "description": "埋設物存否",
+                "example": true
+              },
+              "facilitySidList": {
+                "type": "array",
+                "description": "設備空間情報リスト",
+                "items": {
+                  "type": "object",
+                  "description": "設備空間情報",
+                  "properties": {
+                    "dataType": {
+                      "type": "string",
+                      "description": "データ種別",
+                      "enum": [
+                        "Update",
+                        "Delete"
+                      ],
+                      "example": "Update"
+                    },
+                    "facilityAttribute": {
+                      "type": "object",
+                      "properties": {},
+                      "description": "設備属性",
+                      "example": {
+                        "土被り": "5",
+                        "管の径": "15",
+                        "管の配置状況": "exist"
+                      }
+                    },
+                    "infraCompanyId": {
+                      "type": "string",
+                      "description": "インフラ事業者ID",
+                      "example": "12345678901234567890"
+                    },
+                    "objectId": {
+                      "type": "string",
+                      "description": "オブジェクトID",
+                      "example": "A0001"
+                    },
+                    "objectName": {
+                      "type": "string",
+                      "description": "オブジェクト名称",
+                      "example": "管路"
+                    },
+                    "sidList": {
+                      "type": "array",
+                      "description": "空間ID（配列）",
+                      "example": [
+                        "24/52/14882510/6607973",
+                        "24/52/14882404/6607859"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "facilityReception": {
+        "type": "object",
+        "required": [
+          "sidList"
+        ],
+        "description": "埋設物情報取得受付依頼",
+        "properties": {
+          "infraCompanyIdList": {
+            "type": "array",
+            "description": "インフラ事業者ID（配列）",
+            "example": [
+              "12345678901234567890",
+              "12345678901234567891"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "returnZoomLevel": {
+            "type": "integer",
+            "format": "int32",
+            "description": "返却ズームレベル",
+            "example": 23
+          },
+          "sidList": {
+            "type": "array",
+            "description": "空間ID（配列）",
+            "example": [
+              "24/52/14882510/6607973",
+              "24/52/14882404/6607859"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "updateDate": {
+            "type": "string",
+            "description": "更新日時",
+            "example": "2024/08/20 03:59:44"
+          }
+        }
+      },
+      "facility-output-task": {
+        "required": [
+          "dataModelType",
+          "attribute"
+        ],
+        "type": "object",
+        "description": "埋設物情報取得受付結果",
+        "properties": {
+          "dataModelType": {
+            "type": "string",
+            "description": "データモデルタイプ",
+            "enum": [
+              "test1",
+              "test2"
+            ],
+            "example": "test1"
+          },
+          "attribute": {
+            "required": [
+              "taskId"
+            ],
+            "type": "object",
+            "description": "埋設物情報取得受付結果",
+            "properties": {
+              "taskId": {
+                "type": "string",
+                "description": "タスクID",
+                "example": "000000000000000001"
+              }
+            }
+          }
+        }
+      },
+      "output-task": {
+        "required": [
+          "dataModelType",
+          "attribute"
+        ],
+        "type": "object",
+        "description": "ファイル作成状況確認結果",
+        "properties": {
+          "dataModelType": {
+            "type": "string",
+            "description": "データモデルタイプ",
+            "enum": [
+              "test1",
+              "test2"
+            ],
+            "example": "test1"
+          },
+          "attribute": {
+            "type": "object",
+            "description": "ファイル作成状況確認結果",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "エラー内容",
+                "example": "ファイル作成に失敗しました。"
+              },
+              "filePath": {
+                "type": "string",
+                "description": "ファイル格納先",
+                "example": "https://xxxx/ccc.zip"
+              },
+              "taskStatus": {
+                "type": "string",
+                "enum": [
+                  "0",
+                  "1",
+                  "2",
+                  "9"
+                ],
+                "description": "タスク状況",
+                "example": "2"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+     
+      window.onload = function() {
+        const ui = SwaggerUIBundle({
+          spec: spec,
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+          ],
+          layout: "StandaloneLayout"
+        })
+     
+        window.ui = ui
+      }
+  </script>
+  </body>
+</html>

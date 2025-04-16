@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- © 2025 NTT DATA Japan Co., Ltd. & NTT InfraNet All Rights Reserved. -->
+<!--Referenced By "https://docs.pmd-code.org/pmd-doc-7.3.0/pmd_rules_java.html"-->
+<ruleset name="Custom Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>
+    my custom rule
+  </description>
+  <!--コーディング規約 2.4.3応-->
+  <rule ref="category/java/codestyle.xml/BooleanGetMethodName" />
+  <!--コーディング規約 5.5.1対応-->
+  <rule ref="category/java/codestyle.xml/AtLeastOneConstructor">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Data,lombok.Value,lombok.Builder,lombok.NoArgsConstructor,lombok.RequiredArgsConstructor,lombok.AllArgsConstructor,
+org.springframework.boot.autoconfigure.SpringBootApplication,
+org.springframework.web.bind.annotation.RestController,org.springframework.stereotype.Service,org.apache.ibatis.annotations.Mapper,jakarta.validation.Constraint" />
+    </properties>
+  </rule>
+  <!--コーディング規約 5.6.3対応-->
+  <rule ref="category/java/bestpractices.xml/MissingOverride" />
+  <!--コーディング規約 5.7.2対応-->
+  <rule ref="category/java/design.xml/FinalFieldCouldBeStatic" />
+  <!--コーディング規約 6.2.2対応-->
+  <rule ref="category/java/errorprone.xml/ConstructorCallsOverridableMethod" />
+  <!--コーディング規約 6.4.2対応-->
+  <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor" />
+  <!--コーディング規約 6.5.2対応-->
+  <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
+  <!--コーディング規約 6.5.3対応-->
+  <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
+  <!--コーディング規約 6.5.4対応-->
+  <rule ref="category/java/performance.xml/UseStringBufferForStringAppends" />
+  <!--コーディング規約 6.6.1対応-->
+  <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull" />
+  <!--コーディング規約 6.6.2対応-->
+  <rule ref="category/java/performance.xml/AvoidArrayLoops" />
+  <!--コーディング規約 6.7.2対応-->
+  <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables" />
+  <!--コーディング規約 6.7.4対応-->
+  <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach" />
+  <!--コーディング規約 6.7.5対応-->
+  <rule ref="category/java/bestpractices.xml/DefaultLabelNotLastInSwitchStmt" />
+  <!--コーディング規約 6.10.3一部対応-->
+  <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
+  <!--コーディング規約 6.11.2対応-->
+  <rule ref="category/java/multithreading.xml/AvoidThreadGroup" />
+  <!--コーディング規約 6.13.1対応-->
+  <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode" />
+  <!--コーディング規約 6.14.1対応-->
+  <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable" />
+</ruleset>
